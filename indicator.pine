@@ -1,0 +1,78 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+
+//@version=5
+indicator("Market Sentiment Weighted Volume Delta", shorttitle="Market Sentiment Weighted Volume Delta")
+
+calculateVolumeDelta() =>
+    gapUp = close[1] < low ? low - close[1] : 0
+    gapDown = close[1] > high ? close[1] - high : 0
+    buyVolume = volume * (close - (low - gapUp)) / ((high + gapDown) - (low - gapUp))
+    sellVolume = volume - buyVolume
+    (buyVolume - sellVolume) / volume
+
+getVolumeDelta(ticker, timeframe) =>
+    request.security(ticker, timeframe, calculateVolumeDelta())
+
+getWeightedChange(ticker, weight) =>
+    changeSector = getVolumeDelta(ticker, timeframe.period)
+    changeSector * (weight / 10)
+
+tickerWeightMapping = input("XLK:29.63,XLF:13.12,XLV:12.20,XLY:10.25,XLC:9.23,XLI:8.79", title="Sector Weights (Format: Ticker:Weight,Ticker:Weight,...)")
+bullColor = input(color.rgb(8, 153, 129), title="Bull Color")
+bearColor = input(color.rgb(242, 54, 69), title="Bear Color")
+plotColor = input(color.orange, title="Plot Color")
+zeroLineColor = input(color.white, title="Zero Line Color")
+
+pairs = str.split(tickerWeightMapping, ",")
+float sentiment = 0.0
+float maxSentimentValue = 0.0
+for pair in pairs
+    splitPair = str.split(pair, ":")
+    ticker = str.tostring(array.get(splitPair, 0))
+    weight = str.tonumber(str.tostring(array.get(splitPair, 1)))
+    maxSentimentValue := maxSentimentValue + (weight / 10)
+    if ticker == "XLK"
+        sentiment := sentiment + getWeightedChange("XLK", weight)
+        continue
+    if ticker == "XLF"
+        sentiment := sentiment + getWeightedChange("XLF", weight)
+        continue
+    if ticker == "XLV"
+        sentiment := sentiment + getWeightedChange("XLV", weight)
+        continue
+    if ticker == "XLY"
+        sentiment := sentiment + getWeightedChange("XLY", weight)
+        continue
+    if ticker == "XLI"
+        sentiment := sentiment + getWeightedChange("XLI", weight)
+        continue
+    if ticker == "XLC"
+        sentiment := sentiment + getWeightedChange("XLC", weight)
+        continue
+    if ticker == "XLP"
+        sentiment := sentiment + getWeightedChange("XLP", weight)
+        continue
+    if ticker == "XLE"
+        sentiment := sentiment + getWeightedChange("XLE", weight)
+        continue
+    if ticker == "XLU"
+        sentiment := sentiment + getWeightedChange("XLU", weight)
+        continue
+    if ticker == "XLB"
+        sentiment := sentiment + getWeightedChange("XLB", weight)
+        continue
+    if ticker == "XLRE"
+        sentiment := sentiment + getWeightedChange("XLRE", weight)
+        continue
+
+// Scale sentiment value to -2 to 2 scale
+float minSentimentValue = 0 - maxSentimentValue
+normalizedValue = (sentiment - minSentimentValue) / (maxSentimentValue - minSentimentValue)
+new_min = -2
+new_max = 2
+scaledSentiment = normalizedValue * (new_max - new_min) + new_min
+
+plot(scaledSentiment, "MSWVD", color=plotColor, style=plot.style_columns)
+hline(0, "Zero Line", color=zeroLineColor)
+hline(new_max, "Bull Line", color=bullColor, linestyle=hline.style_solid)
+hline(new_min, "Bear Line", color=bearColor, linestyle=hline.style_solid)
