@@ -17,7 +17,7 @@ getWeightedChange(ticker, weight) =>
     changeSector = getVolumeDelta(ticker, timeframe.period)
     changeSector * (weight / 10)
 
-tickerWeightMapping = input("XLK:29.63,XLF:13.12,XLV:12.20,XLY:10.25,XLC:9.23,XLI:8.79", title="Sector Weights (Format: Ticker:Weight,Ticker:Weight,...)")
+tickerWeightMapping = input("XLK:30.01,XLF:12.82,XLV:11.97,XLY:10.35,XLC:9.37,XLI:8.75", title="Sector Weights (Format: Ticker:Weight,Ticker:Weight,...)")
 bullColor = input(color.rgb(8, 153, 129), title="Bull Color")
 bearColor = input(color.rgb(242, 54, 69), title="Bear Color")
 plotColor = input(color.orange, title="Plot Color")
