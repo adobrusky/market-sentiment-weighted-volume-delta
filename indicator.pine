@@ -4,9 +4,10 @@
 indicator("Market Sentiment Weighted Volume Delta", shorttitle="Market Sentiment Weighted Volume Delta")
 
 calculateVolumeDelta() =>
-    gapUp = close[1] < low ? low - close[1] : 0
-    gapDown = close[1] > high ? close[1] - high : 0
-    buyVolume = volume * (close - (low - gapUp)) / ((high + gapDown) - (low - gapUp))
+    // gapUp = close[1] < low ? low - close[1] : 0
+    // gapDown = close[1] > high ? close[1] - high : 0
+    // buyVolume = volume * (close - (low - gapUp)) / ((high + gapDown) - (low - gapUp))
+    buyVolume = high == low ? 0 : volume *  (close - low)  / (high - low)
     sellVolume = volume - buyVolume
     (buyVolume - sellVolume) / volume
 
@@ -17,13 +18,44 @@ getWeightedChange(ticker, weight) =>
     changeSector = getVolumeDelta(ticker, timeframe.period)
     changeSector * (weight / 10)
 
-tickerWeightMapping = input("XLK:30.01,XLF:12.82,XLV:11.97,XLY:10.35,XLC:9.37,XLI:8.75", title="Sector Weights (Format: Ticker:Weight,Ticker:Weight,...)")
+autoDetect = input.bool(true, title="Enable Auto-Detection", tooltip="Automatically use the preset for SPY/QQQ based on the selected ticker.")
+presetSectorWeights = input.string("Top 6 SPY", title="Preset Sector Weights for ETFs", options=['Top 6 SPY', 'Top 5 QQQ', 'Custom'],
+                                   tooltip="Choose preset sector weights or set custom weights.")
+tickerWeightMapping = input.string("XLK:30.01,XLF:12.82,XLV:11.97", title="Custom Sector Weights",
+                                   tooltip="Define custom sector weights in the format: 'Ticker:Weight, Ticker:Weight,...'.")
+presetSPYWeights = input.string("XLK:28.90,XLF:13.18,XLV:12.36,XLY:10.36,XLC:9.24,XLI:8.85", title="Preset Top 6 SPY Sector Weights",
+                                   tooltip="Define preset SPY sector weights in the format: 'Ticker:Weight, Ticker:Weight,...'.")
+presetQQQWeights = input.string("XLK:57.64,XLY:19,XLV:6.95,XLC:5.03,XLI:4.79", title="Preset Top 5 QQQ Sector Weights",
+                                   tooltip="Define preset QQQ sector weights in the format: 'Ticker:Weight, Ticker:Weight,...'.")
 bullColor = input(color.rgb(8, 153, 129), title="Bull Color")
 bearColor = input(color.rgb(242, 54, 69), title="Bear Color")
 plotColor = input(color.orange, title="Plot Color")
 zeroLineColor = input(color.white, title="Zero Line Color")
 
-pairs = str.split(tickerWeightMapping, ",")
+getTickerWeightMapping() =>
+    bool isSPY = syminfo.ticker == "SPY"
+    bool isQQQ = syminfo.ticker == "QQQ"
+    result = tickerWeightMapping
+    if autoDetect
+        if isSPY
+            result := presetSPYWeights
+        else if isQQQ
+            result := presetQQQWeights
+        else
+            result := switch presetSectorWeights
+                "Top 6 SPY" => presetSPYWeights
+                "Top 5 QQQ" => presetQQQWeights
+                "Custom" => tickerWeightMapping
+    else
+        result := switch presetSectorWeights
+            "Top 6 SPY" => presetSPYWeights
+            "Top 5 QQQ" => presetQQQWeights
+            "Custom" => tickerWeightMapping
+    result
+
+var string selectedWeightMapping = getTickerWeightMapping()
+
+pairs = str.split(selectedWeightMapping, ",")
 float sentiment = 0.0
 float maxSentimentValue = 0.0
 for pair in pairs
