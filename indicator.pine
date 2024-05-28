@@ -23,7 +23,7 @@ presetSectorWeights = input.string("Top 6 SPY", title="Preset Sector Weights for
                                    tooltip="Choose preset sector weights or set custom weights.")
 tickerWeightMapping = input.string("XLK:30.01,XLF:12.82,XLV:11.97", title="Custom Sector Weights",
                                    tooltip="Define custom sector weights in the format: 'Ticker:Weight, Ticker:Weight,...'.")
-presetSPYWeights = input.string("XLK:28.90,XLF:13.18,XLV:12.36,XLY:10.36,XLC:9.24,XLI:8.85", title="Preset Top 6 SPY Sector Weights",
+presetSPYWeights = input.string("XLK:30.88,XLF:12.83,XLV:11.99,XLY:9.84,XLC:9.29,XLI:8.57", title="Preset Top 6 SPY Sector Weights",
                                    tooltip="Define preset SPY sector weights in the format: 'Ticker:Weight, Ticker:Weight,...'.")
 presetQQQWeights = input.string("XLK:57.64,XLY:19,XLV:6.95,XLC:5.03,XLI:4.79", title="Preset Top 5 QQQ Sector Weights",
                                    tooltip="Define preset QQQ sector weights in the format: 'Ticker:Weight, Ticker:Weight,...'.")
