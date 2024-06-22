@@ -4,18 +4,23 @@
 indicator("Market Sentiment Weighted Volume Delta", shorttitle="Market Sentiment Weighted Volume Delta")
 
 calculateVolumeDelta() =>
+    // logic for considering gaps. keeping this incase its useful in the future
     // gapUp = close[1] < low ? low - close[1] : 0
     // gapDown = close[1] > high ? close[1] - high : 0
     // buyVolume = volume * (close - (low - gapUp)) / ((high + gapDown) - (low - gapUp))
-    buyVolume = high == low ? 0 : volume *  (close - low)  / (high - low)
-    sellVolume = volume - buyVolume
-    (buyVolume - sellVolume) / volume
+    if high == low
+        0
+    else
+        buyVolume = volume *  (close - low)  / (high - low)
+        sellVolume = volume - buyVolume
+        (buyVolume - sellVolume) / volume
 
 getVolumeDelta(ticker, timeframe) =>
     request.security(ticker, timeframe, calculateVolumeDelta())
 
 getWeightedChange(ticker, weight) =>
-    changeSector = getVolumeDelta(ticker, timeframe.period)
+    t = ticker.new("BATS", ticker, session.extended)
+    changeSector = getVolumeDelta(t, timeframe.period)
     changeSector * (weight / 10)
 
 autoDetect = input.bool(true, title="Enable Auto-Detection", tooltip="Automatically use the preset for SPY/QQQ based on the selected ticker.")
@@ -23,7 +28,7 @@ presetSectorWeights = input.string("Top 6 SPY", title="Preset Sector Weights for
                                    tooltip="Choose preset sector weights or set custom weights.")
 tickerWeightMapping = input.string("XLK:30.01,XLF:12.82,XLV:11.97", title="Custom Sector Weights",
                                    tooltip="Define custom sector weights in the format: 'Ticker:Weight, Ticker:Weight,...'.")
-presetSPYWeights = input.string("XLK:32.65,XLF:12.26,XLV:11.83,XLY:9.81,XLC:9.20,XLI:8.22", title="Preset Top 6 SPY Sector Weights",
+presetSPYWeights = input.string("XLK:32.64,XLF:12.38,XLV:11.76,XLY:9.82,XLC:9.20,XLI:8.21", title="Preset Top 6 SPY Sector Weights",
                                    tooltip="Define preset SPY sector weights in the format: 'Ticker:Weight, Ticker:Weight,...'.")
 presetQQQWeights = input.string("XLK:57.64,XLY:19,XLV:6.95,XLC:5.03,XLI:4.79", title="Preset Top 5 QQQ Sector Weights",
                                    tooltip="Define preset QQQ sector weights in the format: 'Ticker:Weight, Ticker:Weight,...'.")
