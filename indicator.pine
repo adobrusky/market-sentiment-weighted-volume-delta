@@ -4,7 +4,7 @@
 indicator("Market Sentiment Weighted Volume Delta", shorttitle="Market Sentiment Weighted Volume Delta")
 
 calculateVolumeDelta() =>
-    // logic for considering gaps. keeping this incase its useful in the future
+    // logic for considering gaps
     // gapUp = close[1] < low ? low - close[1] : 0
     // gapDown = close[1] > high ? close[1] - high : 0
     // buyVolume = volume * (close - (low - gapUp)) / ((high + gapDown) - (low - gapUp))
@@ -19,7 +19,9 @@ getVolumeDelta(ticker, timeframe) =>
     request.security(ticker, timeframe, calculateVolumeDelta())
 
 getWeightedChange(ticker, weight) =>
-    t = ticker.new("BATS", ticker, session.extended)
+    t = ticker.new("BATS", ticker, session.extended)    
+    if timeframe.isdwm
+        t := ticker.new("BATS", ticker)
     changeSector = getVolumeDelta(t, timeframe.period)
     changeSector * (weight / 10)
 
@@ -63,6 +65,7 @@ var string selectedWeightMapping = getTickerWeightMapping()
 pairs = str.split(selectedWeightMapping, ",")
 float sentiment = 0.0
 float maxSentimentValue = 0.0
+
 for pair in pairs
     splitPair = str.split(pair, ":")
     ticker = str.tostring(array.get(splitPair, 0))
