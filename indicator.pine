@@ -30,9 +30,9 @@ presetSectorWeights = input.string("Top 6 SPY", title="Preset Sector Weights for
                                    tooltip="Choose preset sector weights or set custom weights.")
 tickerWeightMapping = input.string("XLK:30.01,XLF:12.82,XLV:11.97", title="Custom Sector Weights",
                                    tooltip="Define custom sector weights in the format: 'Ticker:Weight, Ticker:Weight,...'.")
-presetSPYWeights = input.string("XLK:31.68,XLF:12.91,XLV:12.08,XLY:9.67,XLC:8.87,XLI:8.34", title="Preset Top 6 SPY Sector Weights",
+presetSPYWeights = input.string("XLK:30.34,XLF:13.45,XLV:12.29,XLY:9.93,XLC:8.80,XLI:8.39", title="Preset Top 6 SPY Sector Weights",
                                    tooltip="Define preset SPY sector weights in the format: 'Ticker:Weight, Ticker:Weight,...'.")
-presetQQQWeights = input.string("XLK:50.85,XLC:15.76,XLY:12.38,XLV:6.34,,XLP:6.31", title="Preset Top 5 QQQ Sector Weights",
+presetQQQWeights = input.string("XLK:49.91,XLC:15.66,XLY:12.68,XLP:6.53,XLV:6.51", title="Preset Top 5 QQQ Sector Weights",
                                    tooltip="Define preset QQQ sector weights in the format: 'Ticker:Weight, Ticker:Weight,...'.")
 bullColor = input(color.rgb(8, 153, 129), title="Bull Color")
 bearColor = input(color.rgb(242, 54, 69), title="Bear Color")
