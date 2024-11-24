@@ -1,6 +1,6 @@
 // This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
 
-//@version=5
+//@version=6
 indicator("Market Sentiment Weighted Volume Delta", shorttitle="Market Sentiment Weighted Volume Delta")
 
 calculateVolumeDelta() =>
@@ -30,9 +30,9 @@ presetSectorWeights = input.string("Top 6 SPY", title="Preset Sector Weights for
                                    tooltip="Choose preset sector weights or set custom weights.")
 tickerWeightMapping = input.string("XLK:30.01,XLF:12.82,XLV:11.97", title="Custom Sector Weights",
                                    tooltip="Define custom sector weights in the format: 'Ticker:Weight, Ticker:Weight,...'.")
-presetSPYWeights = input.string("XLK:30.34,XLF:13.45,XLV:12.29,XLY:9.93,XLC:8.80,XLI:8.39", title="Preset Top 6 SPY Sector Weights",
+presetSPYWeights = input.string("XLK:31.77,XLF:13.82,XLY:10.53,XLV:10.49,XLC:8.90,XLI:8.58", title="Preset Top 6 SPY Sector Weights",
                                    tooltip="Define preset SPY sector weights in the format: 'Ticker:Weight, Ticker:Weight,...'.")
-presetQQQWeights = input.string("XLK:49.91,XLC:15.66,XLY:12.68,XLP:6.53,XLV:6.51", title="Preset Top 5 QQQ Sector Weights",
+presetQQQWeights = input.string("XLK:59.78,XLY:18.28,XLV:6.05,XLC:4.37,XLI:4.33", title="Preset Top 5 QQQ Sector Weights",
                                    tooltip="Define preset QQQ sector weights in the format: 'Ticker:Weight, Ticker:Weight,...'.")
 bullColor = input(color.rgb(8, 153, 129), title="Bull Color")
 bearColor = input(color.rgb(242, 54, 69), title="Bear Color")
